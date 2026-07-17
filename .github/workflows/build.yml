@@ -1,0 +1,30 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://docs.github.com/actions/guides/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    if: "!contains(github.event.head_commit.message, '[ci-skip]')"
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 25
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'temurin'
+        cache: 'gradle'
+    - name: Build with Gradle
+      run: ./gradlew build --no-daemon
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4
+      with:
+       name: CommandLibrary
+       path: ./*/build/libs/*.jar
